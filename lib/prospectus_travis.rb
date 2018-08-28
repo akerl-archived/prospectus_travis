@@ -2,7 +2,7 @@ require 'keylime'
 require 'travis'
 
 module ProspectusCircleci
-  GOOD_STATUSES = %w[created received started passed]
+  GOOD_STATUSES = %w[created received started passed].freeze
 
   ##
   # Helper for automatically adding build status check
