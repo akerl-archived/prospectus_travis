@@ -1,0 +1,5 @@
+dist: trusty
+install:
+  - 'for i in $(cat .circle-ruby) ; do rvm-exec $i bundle install || exit 1 ; done'
+script:
+  - 'for i in $(cat .circle-ruby) ; do rvm-exec $i bundle exec rake || exit 1 ; done'
