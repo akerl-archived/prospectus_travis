@@ -1,7 +1,7 @@
 require 'keylime'
 require 'travis'
 
-module ProspectusCircleci
+module ProspectusTravis
   GOOD_STATUSES = %w[created received started passed].freeze
 
   ##
