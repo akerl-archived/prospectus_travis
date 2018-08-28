@@ -1,8 +1,8 @@
 require 'keylime'
-require 'open-uri'
+require 'travis'
 
 module ProspectusCircleci
-  GOOD_STATUSES = %w[success fixed running new not_running scheduled].freeze
+  GOOD_STATUSES = %w[created received started passed]
 
   ##
   # Helper for automatically adding build status check
@@ -33,33 +33,27 @@ module ProspectusCircleci
 
     private
 
+    def client
+      @client ||= Travis::Client.new(uri, access_token: token)
+    end
+
     def parse_status
       return [status, status] if GOOD_STATUSES.include?(status)
-      [status, 'success']
+      [status, 'passed']
     end
 
     def status
-      return @status if @status
-      build = api_req("project/github/#{@repo_slug}").first
-      @status = build ? build['status'] : 'new'
+      @status ||= client.repo(@repo_slug).last_build.state
     end
 
-    def api_req(path)
-      JSON.parse(open(url(path)).read) # rubocop:disable Security/Open
-    end
-
-    def url(path)
-      "#{base_url}/api/v1.1/#{path}?circle-token=#{token}"
-    end
-
-    def base_url
-      'https://circleci.com'
+    def uri
+      @uri ||= Travis::Client::COM_URI
     end
 
     def token
       return @token if @token
-      credential = Keylime.new(server: base_url)
-      msg = "CircleCI Token (#{base_url}/account/api)"
+      credential = Keylime.new(server: uri)
+      msg = 'TravisCI Token (run `travis token --com` to generate)'
       @token = credential.get!(msg).password
     end
   end
