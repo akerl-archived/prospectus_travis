@@ -34,7 +34,7 @@ module ProspectusTravis
     private
 
     def client
-      @client ||= Travis::Client.new(uri, access_token: token)
+      @client ||= Travis::Client.new(uri: uri, access_token: token)
     end
 
     def parse_status
