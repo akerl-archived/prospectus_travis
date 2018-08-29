@@ -8,4 +8,4 @@ if ENV['CI'] == 'true'
 end
 
 require 'rspec'
-require 'prospectus_circleci'
+require 'prospectus_travis'
