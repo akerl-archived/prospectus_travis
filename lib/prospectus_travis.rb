@@ -4,6 +4,8 @@ require 'travis'
 module ProspectusTravis
   GOOD_STATUSES = %w[created received started passed].freeze
 
+  FAKE_BUILD = Struct.new(:state)
+
   ##
   # Helper for automatically adding build status check
   class Build < Module
@@ -43,7 +45,15 @@ module ProspectusTravis
     end
 
     def status
-      @status ||= client.repo(@repo_slug).last_build.state
+      @status ||= last_build.state
+    end
+
+    def last_build
+      @last_build ||= repo.last_build || FAKE_BUILD.new('no_results')
+    end
+
+    def repo
+      @repo ||= client.repo(@repo_slug)
     end
 
     def uri
