@@ -18,7 +18,7 @@ module ProspectusTravis
 
       other.deps do
         item do
-          name 'circleci'
+          name 'travis'
 
           expected do
             static
