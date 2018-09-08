@@ -7,45 +7,20 @@ module ProspectusTravis
   FAKE_BUILD = Struct.new(:state)
 
   ##
-  # Helper for automatically adding build status check
-  class Build < Module
-    def initialize(repo_slug)
-      @repo_slug = repo_slug || raise('No repo specified')
+  # Lookup describes a TravisCI lookup
+  class Lookup
+    def expected
+      @expected ||= GOOD_STATUSES.include?(actual) ? actual : 'passed'
     end
 
-    def extended(other) # rubocop:disable Metrics/MethodLength
-      actual_val, expected_val = parse_status
-
-      other.deps do
-        item do
-          name 'travis'
-
-          expected do
-            static
-            set expected_val
-          end
-
-          actual do
-            static
-            set actual_val
-          end
-        end
-      end
+    def actual
+      @actual ||= last_build.state
     end
 
     private
 
     def client
       @client ||= Travis::Client.new(uri: uri, access_token: token)
-    end
-
-    def parse_status
-      return [status, status] if GOOD_STATUSES.include?(status)
-      [status, 'passed']
-    end
-
-    def status
-      @status ||= last_build.state
     end
 
     def last_build
@@ -65,6 +40,36 @@ module ProspectusTravis
       credential = Keylime.new(server: uri)
       msg = 'TravisCI Token (run `travis token --com` to generate)'
       @token = credential.get!(msg).password
+    end
+  end
+
+  ##
+  # Helper for automatically adding build status check
+  class Build < Module
+    def initialize(repo_slug)
+      @repo_slug = repo_slug || raise('No repo specified')
+    end
+
+    def extended(other) # rubocop:disable Metrics/MethodLength
+      lookup = Lookup.new
+
+      other.deps do
+        item do
+          name 'travis'
+
+          expected do
+            define_singleton_method(:load) do
+              lookup.expected
+            end
+          end
+
+          actual do
+            define_singleton_method(:load) do
+              lookup.actual
+            end
+          end
+        end
+      end
     end
   end
 end
