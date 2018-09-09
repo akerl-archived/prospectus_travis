@@ -62,15 +62,13 @@ module ProspectusTravis
           name 'travis'
 
           expected do
-            define_singleton_method(:load) do
-              lookup.expected
-            end
+            static
+            set lookup.expected
           end
 
           actual do
-            define_singleton_method(:load) do
-              lookup.actual
-            end
+            static
+            set lookup.actual
           end
         end
       end
