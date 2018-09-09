@@ -9,6 +9,10 @@ module ProspectusTravis
   ##
   # Lookup describes a TravisCI lookup
   class Lookup
+    def initialize(repo_slug)
+      @repo_slug = repo_slug
+    end
+
     def expected
       @expected ||= GOOD_STATUSES.include?(actual) ? actual : 'passed'
     end
@@ -51,7 +55,7 @@ module ProspectusTravis
     end
 
     def extended(other) # rubocop:disable Metrics/MethodLength
-      lookup = Lookup.new
+      lookup = Lookup.new(@repo_slug)
 
       other.deps do
         item do
