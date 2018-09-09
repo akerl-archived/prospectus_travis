@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.test_files  = `git ls-files spec/*`.split
 
   s.add_dependency 'keylime', '~> 0.2.1'
-  s.add_dependency 'prospectus', '~> 0.6.0'
+  s.add_dependency 'prospectus', '~> 0.7.0'
   s.add_dependency 'travis', '~> 1.8.9'
 
   s.add_development_dependency 'codecov', '~> 0.1.1'
