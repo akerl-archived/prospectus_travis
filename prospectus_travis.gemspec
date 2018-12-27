@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'keylime', '~> 0.2.1'
   s.add_dependency 'prospectus', '~> 0.8.0'
-  s.add_dependency 'travis-akerl', '~> 1.8.9'
+  s.add_dependency 'travis-akerl', '~> 1.8.9.1'
 
   s.add_development_dependency 'codecov', '~> 0.1.1'
   s.add_development_dependency 'fuubar', '~> 2.3.0'
